@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Heart & Camera Message</title>
+<style>
+  body { 
+    font-family: 'Comic Sans MS', cursive, sans-serif; 
+    margin: 0; 
+    background: #72a0c1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100vh; 
+    color: #222;
+  }
+  .heart {
+    color: #dc4a3b; 
+    font-size: 120px; 
+    margin-top: 20px;
+    position: relative;
+  }
+  .tears-container {
+    position: relative; 
+    margin: 20px 0; 
+    border: 12px solid #eee; 
+    border-radius: 12px; 
+    width: 320px; 
+    height: 240px; 
+    overflow: hidden;
+    background: black;
+  }
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tear1, .tear2 {
+    position: absolute; 
+    width: 24px; 
+    height: 40px;
+    background: #7ec6e1; 
+    border-radius: 50% / 100%;
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  .tear1 { top: 90px; left: 40px; transform: rotate(-10deg); }
+  .tear2 { top: 90px; right: 40px; transform: rotate(10deg); }
+  .message {
+    max-width: 320px;
+    padding: 15px;
+    font-size: 16px;
+    line-height: 1.4;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #555;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="heart">❤️</div>
+
+<div class="tears-container">
+  <video id="video" autoplay muted playsinline></video>
+  <div class="tear1"></div>
+  <div class="tear2"></div>
+</div>
+
+<div class="message">
+  To have made this cute face sad with my silliness. I am sorry. I can do anything to bring a smile on that mirror. Promise.
+</div>
+
+<script>
+  async function startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.getElementById('video');
+      video.srcObject = stream;
+    } catch (err) {
+      alert('Camera access denied or not available.');
+    }
+  }
+
+  startCamera();
+</script>
+
+</body>
+</html>
