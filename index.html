@@ -3,90 +3,83 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Heart & Camera Message</title>
+<title>Interactive Card</title>
 <style>
-  body { 
-    font-family: 'Comic Sans MS', cursive, sans-serif; 
-    margin: 0; 
-    background: #72a0c1; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100vh; 
-    color: #222;
-  }
-  .heart {
-    color: #dc4a3b; 
-    font-size: 120px; 
-    margin-top: 20px;
-    position: relative;
-  }
-  .tears-container {
-    position: relative; 
-    margin: 20px 0; 
-    border: 12px solid #eee; 
-    border-radius: 12px; 
-    width: 320px; 
-    height: 240px; 
-    overflow: hidden;
-    background: black;
-  }
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  body { font-family: 'Comic Sans MS', cursive, sans-serif; margin: 0; background: #72a0c1; }
+  .card { width: 320px; margin: 40px auto; background: white; border-radius: 10px; box-shadow: 0 0 10px #333; cursor: pointer; user-select: none; }
+  .front, .inside { padding: 20px; box-sizing: border-box; }
+  .heart { font-size: 120px; text-align: center; color: #dc4a3b; position: relative; }
+  .heart::after { content: "💔"; position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 120px; }
+  .text-front { text-align: center; font-size: 30px; margin-top: 10px; color: white; text-shadow: 2px 2px #333; }
+  .inside { display: none; text-align: center; }
+  .msg { font-size: 16px; margin-top: 10px; line-height: 1.4; color: #222; }
+  video { width: 250px; height: 200px; margin-top: 20px; border: 12px solid #eee; border-radius: 12px; object-fit: cover; background: black; }
+  .tears { position: relative; }
   .tear1, .tear2 {
-    position: absolute; 
-    width: 24px; 
-    height: 40px;
-    background: #7ec6e1; 
-    border-radius: 50% / 100%;
+    position: absolute; width: 24px; height: 40px;
+    background: #7ec6e1; border-radius: 50% / 100%;
     opacity: 0.8;
-    pointer-events: none;
   }
   .tear1 { top: 90px; left: 40px; transform: rotate(-10deg); }
   .tear2 { top: 90px; right: 40px; transform: rotate(10deg); }
-  .message {
-    max-width: 320px;
-    padding: 15px;
-    font-size: 16px;
-    line-height: 1.4;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 0 8px #555;
-    margin-bottom: 30px;
-    text-align: center;
-  }
 </style>
 </head>
 <body>
 
-<div class="heart">❤️</div>
-
-<div class="tears-container">
-  <video id="video" autoplay muted playsinline></video>
-  <div class="tear1"></div>
-  <div class="tear2"></div>
-</div>
-
-<div class="message">
-  To have made this cute face sad with my silliness. I am sorry. I can do anything to bring a smile on that mirror. Promise.
+<div class="card" id="card">
+  <div class="front" id="front">
+    <div class="heart">❤️</div>
+    <div class="text-front">It Breaks My Heart</div>
+  </div>
+  <div class="inside" id="inside">
+    <div class="tears">
+      <video id="video" autoplay muted playsinline></video>
+      <div class="tear1"></div>
+      <div class="tear2"></div>
+    </div>
+    <div class="msg">
+      To have made this cute face sad with my silliness. I am sorry. I can do anything to bring a smile on that mirror. Promise.
+    </div>
+  </div>
 </div>
 
 <script>
+  const card = document.getElementById('card');
+  const front = document.getElementById('front');
+  const inside = document.getElementById('inside');
+  const video = document.getElementById('video');
+
+  let opened = false;
+
+  card.addEventListener('click', () => {
+    if (!opened) {
+      front.style.display = 'none';
+      inside.style.display = 'block';
+      startCamera();
+      opened = true;
+    } else {
+      stopCamera();
+      inside.style.display = 'none';
+      front.style.display = 'block';
+      opened = false;
+    }
+  });
+
   async function startCamera() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      const video = document.getElementById('video');
       video.srcObject = stream;
-    } catch (err) {
+    } catch(err) {
       alert('Camera access denied or not available.');
     }
   }
 
-  startCamera();
+  function stopCamera() {
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
+  }
 </script>
 
 </body>
